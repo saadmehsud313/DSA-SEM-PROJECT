@@ -62,7 +62,7 @@ public class AccountNode implements AVLNodeData<AccountNode> {
         this.status = status;
     }
 
-    public void addTransaction(String type , float ammount){
+    public void addTransaction(String type , float ammount,String source){
 
         if(!type.equalsIgnoreCase("deposit") && !type.equalsIgnoreCase("withdraw")){
             System.out.println("Invalid transaction type. Use 'deposit' or 'withdraw'.");
@@ -77,7 +77,7 @@ public class AccountNode implements AVLNodeData<AccountNode> {
         } else {
             balance += ammount;
         }//End of else
-        Transaction newTransaction = new Transaction(id, type, ammount);
+        Transaction newTransaction = new Transaction(id, type, ammount,source);
         if (transactionHead == null) {
             transactionHead = newTransaction;
         } else {

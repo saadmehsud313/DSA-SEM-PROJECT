@@ -29,6 +29,7 @@ public class Main {
         AVLTree<AccountNode> accountRoot = new AVLTree<>();
 
         int choice = 1, choice1 = 1, id = 0, pin = 0;
+        float amount;
         String username, password, accountType = "",type = "";
 
         // Load data (you need to implement file reading in your AVLTree class)
@@ -227,7 +228,7 @@ public class Main {
                                         System.out.println("Account with ID " + id + " not found.");
                                     } else {
                                         System.out.print("Enter amount to withdraw: ");
-                                        float amount = scanner.nextFloat();
+                                        amount = scanner.nextFloat();
                                         scanner.nextLine(); // Consume newline
                                         System.out.print("Enter PIN: ");
                                         pin = scanner.nextInt();
@@ -237,9 +238,9 @@ public class Main {
                                             break;
                                         }// End of if 
                                         else{
-                                        accountNode.addTransaction("withdraw", amount); 
-                                        }//End of else    
-                                    }//End of switch
+                                        accountNode.addTransaction("withdraw", amount,"Staff"); 
+                                        }//End of nested else    
+                                    }//End of else
                                     break;
                                 case 3:
                                     System.out.print("Enter account ID for transaction: ");
@@ -249,8 +250,8 @@ public class Main {
                                     if(accountNode == null){
                                         System.out.println("Account with ID " + id + " not found.");
                                     } else {
-                                        System.out.print("Enter amount to withdraw: ");
-                                        float amount = scanner.nextFloat();
+                                        System.out.print("Enter amount to deposit: ");
+                                        amount = scanner.nextFloat();
                                         scanner.nextLine(); // Consume newline
                                         System.out.print("Enter PIN: ");
                                         pin = scanner.nextInt();
@@ -260,7 +261,7 @@ public class Main {
                                             break;
                                         }// End of if 
                                         else{
-                                        accountNode.addTransaction("deposit", amount); 
+                                        accountNode.addTransaction("deposit", amount,"Staff"); 
                                         }//End of else    
                                     }//End of switch
                                     break;
@@ -293,7 +294,27 @@ public class Main {
                         scanner.nextLine();
 
                         if (choice1 == 1) {
-                            // Implement ATM withdrawal
+                            System.out.print("Enter account ID for transaction: ");
+                                    id = scanner.nextInt();
+                                    scanner.nextLine(); 
+                                    accountNode = accountRoot.search(id);
+                                    if(accountNode == null){
+                                        System.out.println("Account with ID " + id + " not found.");
+                                    } else {
+                                        System.out.print("Enter amount to withdraw: ");
+                                        amount = scanner.nextFloat();
+                                        scanner.nextLine(); // Consume newline
+                                        System.out.print("Enter PIN: ");
+                                        pin = scanner.nextInt();
+                                        scanner.nextLine(); // Consume newline
+                                        if(pin != accountNode.getPin()) {
+                                            System.out.println("Incorrect PIN. Transaction aborted.");
+                                            break;
+                                        }// End of if 
+                                        else{
+                                        accountNode.addTransaction("withdraw", amount,"Staff"); 
+                                        }//End of nested else    
+                                    }//End of else
                         } else if (choice1 == 2) {
                             System.out.println("Exiting ATM services...");
                             break;
