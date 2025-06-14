@@ -22,21 +22,19 @@ public class Main {
 
 
     public static void main(String[] args) {
+        AccountNode accountNode = new AccountNode();
+        UserNode userNode = new UserNode();
         AVLTree<UserNode> adminRoot = new AVLTree<>();
         AVLTree<UserNode> staffRoot = new AVLTree<>();
         AVLTree<AccountNode> accountRoot = new AVLTree<>();
 
         int choice = 1, choice1 = 1, id = 0, pin = 0;
-        String username, password, accountType = "";
+        String username, password, accountType = "",type = "";
 
         // Load data (you need to implement file reading in your AVLTree class)
         accountRoot = DataLoader.loadAccountData("accounts.txt");
-        adminRoot.inorderDisplay();
         adminRoot = DataLoader.loadUserData("admin.txt");
-        System.out.println("Admin Data:");
         staffRoot = DataLoader.loadUserData("staff.txt");
-        System.out.println("Account Data:");
-        accountRoot.inorderDisplay();
         System.out.println("**********************************WELCOME TO BANK MANAGEMENT SYSTEM*********************************");
 
         while (choice != 0) {
@@ -54,11 +52,11 @@ public class Main {
                     if (authenticate(adminRoot)) {
                         while (choice1 != 0) {
                             System.out.println("Select an operation:");
-                            System.out.println("1. Create new account");
-                            System.out.println("2. Delete account");
-                            System.out.println("3. Search account");
+                            System.out.println("1. Create new accountNode");
+                            System.out.println("2. Delete accountNode");
+                            System.out.println("3. Search accountNode");
                             System.out.println("4. View all accounts");
-                            System.out.println("5. Update account");
+                            System.out.println("5. Update accountNode");
                             System.out.println("6. View logs");
                             System.out.println("0. Logout");
                             System.out.print("Enter your choice: ");
@@ -76,7 +74,6 @@ public class Main {
                                     password = scanner.nextLine();
                                     System.out.print("Enter PIN: ");
                                     pin = scanner.nextInt();
-                                    scanner.nextLine(); // Consume newline
 
                                     System.out.println("Select Account Type:\n1. Savings\n2. Current\n3. Default");
                                     int typeChoice = scanner.nextInt();
@@ -86,28 +83,41 @@ public class Main {
                                         case 1 -> accountType = "Savings";
                                         case 2 -> accountType = "Current";
                                         default -> accountType = "Default";
-                                    }
-
-                                    accountRoot.insertNode(new AccountNode(newID, username, password, "active", accountType, 0.0f, pin));
-                                    System.out.println("Account created successfully.");
+                                        }
+                                        if (newID == 0) {
+                                            newID = 1001;
+                                        }
+                                    accountNode=new AccountNode(newID, username, password, "active", accountType, 0.0f, pin);
+                                   System.out.println("Account created successfully.");
                                     break;
                                 case 2:
-                                    // Implement deletion
+                                    System.out.print("Enter accountNode ID to delete: ");
+                                    id = scanner.nextInt();
+                                    scanner.nextLine(); // Consume newline
+                                    if(accountRoot.search(id) == null)
+                                    {
+                                        System.out.println("Account with ID " + id + " not found.");
+                                    }
+                                    else
+                                    {
+                                        accountRoot.deleteNode(id);
+                                        System.out.println("Account with ID " + id + " deleted successfully.");
+                                    }
                                     break;
                                 case 3:
                                     System.out.print("Enter account ID to search: ");
                                     id = scanner.nextInt();
                                     scanner.nextLine(); // Consume newline
-                                    AccountNode account = accountRoot.search(id);
-                                    if(account == null)
+                                    accountNode = accountRoot.search(id);
+                                    if(accountNode == null)
                                     {
                                         System.out.println("Account with ID " + id + " not found.");
 
                                     }//end of if 
                                     else
                                     {
-                                        System.out.println("Account found: ID: " + account.getId() + ", Username: " + account.getUsername() +
-                                                ", Type: " + account.getType() + ", Balance: " + account.getBalance() + ", Status: " + account.getStatus());
+                                        System.out.println("Account found: ID: " + accountNode.getId() + ", Username: " + accountNode.getUsername() +
+                                                ", Type: " + accountNode.getType() + ", Balance: " + accountNode.getBalance() + ", Status: " + accountNode.getStatus());
                                     }//End of else
                                     break;
                                 case 4:
@@ -117,8 +127,8 @@ public class Main {
                                     System.out.print("Enter account ID to update: ");
                                     id = scanner.nextInt();
                                     scanner.nextLine(); // Consume newline
-                                    account = accountRoot.search(id);
-                                    if (account == null) {
+                                    accountNode = accountRoot.search(id);
+                                    if (accountNode == null) {
                                         System.out.println("Account with ID " + id + " not found.");
                                         break;
                                     }
@@ -146,7 +156,7 @@ public class Main {
                                             scanner.nextLine(); // Consume newline
                                             break;
                                         case 4:
-                                            System.out.println("Select new account type:\n1. Savings\n2. Current\n3. Default");
+                                            System.out.println("Select new accountNode type:\n1. Savings\n2. Current\n3. Default");
                                             int newTypeChoice = scanner.nextInt();
                                             scanner.nextLine(); // Consume newline
                                             switch (newTypeChoice) {
@@ -163,12 +173,12 @@ public class Main {
                                             int statusChoice = scanner.nextInt();
                                             scanner.nextLine(); // Consume newline
                                             switch (statusChoice) {
-                                                case 1 ->account.setStatus("active"); 
-                                                case 2 -> account.setStatus("inactive");
-                                                case 3 -> account.setStatus("blocked");
+                                                case 1 ->accountNode.setStatus("active"); 
+                                                case 2 -> accountNode.setStatus("inactive");
+                                                case 3 -> accountNode.setStatus("blocked");
                                                 default->System.out.println("Invalid status choice."); 
                                             }
-                                            System.out.println("Account status updated to: " + account.getStatus());
+                                            System.out.println("Account status updated to: " + accountNode.getStatus());
                                     }
                                     break;
                                 case 6:
@@ -197,8 +207,63 @@ public class Main {
 
                             switch (choice1) {
                                 case 1:
+                                    System.out.print("Enter accountNode ID to check: ");
+                                    id = scanner.nextInt();
+                                    scanner.nextLine(); // Consume newline
+                                    AccountNode accountToCheck = accountRoot.search(id);
+                                    if(accountToCheck == null){
+                                        System.out.println("Account with ID " + id + " not found.");
+                                    } else {
+                                        System.out.println("Account found: ID: " + accountToCheck.getId() + ", Username: " + accountToCheck.getUsername() +
+                                                 ", Balance: " + accountToCheck.getBalance() + ", Status: " + accountToCheck.getStatus());
+                                    }
+                                    break;
                                 case 2:
+                                    System.out.print("Enter account ID for transaction: ");
+                                    id = scanner.nextInt();
+                                    scanner.nextLine(); 
+                                    accountNode = accountRoot.search(id);
+                                    if(accountNode == null){
+                                        System.out.println("Account with ID " + id + " not found.");
+                                    } else {
+                                        System.out.print("Enter amount to withdraw: ");
+                                        float amount = scanner.nextFloat();
+                                        scanner.nextLine(); // Consume newline
+                                        System.out.print("Enter PIN: ");
+                                        pin = scanner.nextInt();
+                                        scanner.nextLine(); // Consume newline
+                                        if(pin != accountNode.getPin()) {
+                                            System.out.println("Incorrect PIN. Transaction aborted.");
+                                            break;
+                                        }// End of if 
+                                        else{
+                                        accountNode.addTransaction("withdraw", amount); 
+                                        }//End of else    
+                                    }//End of switch
+                                    break;
                                 case 3:
+                                    
+                                    System.out.print("Enter account ID for transaction: ");
+                                    id = scanner.nextInt();
+                                    scanner.nextLine(); 
+                                    accountNode = accountRoot.search(id);
+                                    if(accountNode == null){
+                                        System.out.println("Account with ID " + id + " not found.");
+                                    } else {
+                                        System.out.print("Enter amount to withdraw: ");
+                                        float amount = scanner.nextFloat();
+                                        scanner.nextLine(); // Consume newline
+                                        System.out.print("Enter PIN: ");
+                                        pin = scanner.nextInt();
+                                        scanner.nextLine(); // Consume newline
+                                        if(pin != accountNode.getPin()) {
+                                            System.out.println("Incorrect PIN. Transaction aborted.");
+                                            break;
+                                        }// End of if 
+                                        else{
+                                        accountNode.addTransaction("deposit", amount); 
+                                        }//End of else    
+                                    }//End of switch
                                 case 4:
                                     // Implement staff functionality
                                     break;

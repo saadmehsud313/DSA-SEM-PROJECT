@@ -3,6 +3,7 @@ public class AccountNode implements AVLNodeData<AccountNode> {
     private String username, password, type, status;
     private float balance;
     private AccountNode left, right;
+    private Transaction transactionHead;
 
     public AccountNode() {
         this(0, "", "", "active", "savings", 0.0f, 0);
@@ -17,6 +18,9 @@ public class AccountNode implements AVLNodeData<AccountNode> {
         this.balance = balance;
         this.pin = pin;
         this.height = 1;
+        left = null;
+        right = null;
+        transactionHead = null;
     }
 
     @Override
@@ -58,4 +62,44 @@ public class AccountNode implements AVLNodeData<AccountNode> {
         this.status = status;
     }
 
-}
+    public void addTransaction(String type , float ammount){
+
+        if(!type.equalsIgnoreCase("deposit") && !type.equalsIgnoreCase("withdraw")){
+            System.out.println("Invalid transaction type. Use 'deposit' or 'withdraw'.");
+            return;
+        }//End of if
+        if(type.equalsIgnoreCase("withdraw") && ammount >balance){
+            System.out.println("Insufficient balance for withdrawal.");
+            return;
+        }//End of if
+        if(type.equalsIgnoreCase("withdraw")){
+            balance -= ammount;
+        } else {
+            balance += ammount;
+        }//End of else
+        Transaction newTransaction = new Transaction(id, type, ammount);
+        if (transactionHead == null) {
+            transactionHead = newTransaction;
+        } else {
+            Transaction current = transactionHead;
+            while (current.next != null) {
+                current = current.next;
+            }
+            current.next = newTransaction;
+        }//End of else
+        System.out.println("Transaction added: " + type + " of amount " + ammount + ". New balance: " + balance+" , Date: " + newTransaction.date);
+        System.out.println("New Account Balance: " + balance);
+    }//End of addTransaction method
+    public void displayTransactions() {
+        if (transactionHead == null) {
+            System.out.println("No transactions found.");
+            return;
+        }//End of if
+        Transaction current = transactionHead;
+        System.out.println("Transactions for Account ID: " + id);
+        while (current != null) {
+            System.out.println("Type: " + current.type + ", Amount: " + current.amount + ", Date: " + current.date);
+            current = current.next;
+        }//End of while
+    }//End of displayTransactions method
+}//End of AccountNode Class

@@ -70,6 +70,102 @@ public class AVLTree<T extends AVLNodeData<T>> {
         root = insert(root, newNode);
     }//End of insertNode method
 
+    public void deleteNode(int id) {
+    root = delete(root, id);
+}
+
+private T delete(T node, int id) {
+    if (node == null) return null;
+
+    if (id < node.getId()) {
+        node.setLeft(delete(node.getLeft(), id));
+    } else if (id > node.getId()) {
+        node.setRight(delete(node.getRight(), id));
+    } else {
+        // Node to be deleted found
+
+        // Case 1: One or no child
+        if (node.getLeft() == null)
+            return node.getRight();
+        else if (node.getRight() == null)
+            return node.getLeft();
+
+        // Case 2: Two children – get inorder successor
+        T minNode = getMinValueNode(node.getRight());
+
+        // Manually copying data from minNode to node
+        // You can add more fields if needed depending on type T
+        if (node instanceof AccountNode && minNode instanceof AccountNode) {
+            AccountNode n = (AccountNode) node;
+            AccountNode m = (AccountNode) minNode;
+            n.setBalance(m.getBalance());
+            n.setPin(m.getPin());
+            n.setStatus(m.getStatus());
+            n.setType(m.getType());
+        }
+
+        if (node instanceof UserNode && minNode instanceof UserNode) {
+            UserNode n = (UserNode) node;
+            UserNode m = (UserNode) minNode;
+            // No extra fields to copy
+        }
+
+        // Common fields
+        node.setHeight(minNode.getHeight()); // optional
+        try {
+            java.lang.reflect.Method setUsername = node.getClass().getMethod("setUsername", String.class);
+            java.lang.reflect.Method setPassword = node.getClass().getMethod("setPassword", String.class);
+            java.lang.reflect.Method setId = node.getClass().getMethod("setId", int.class);
+
+            setUsername.invoke(node, minNode.getUsername());
+            setPassword.invoke(node, minNode.getPassword());
+            setId.invoke(node, minNode.getId());
+        } catch (Exception e) {
+            // If your classes don't have setters, ignore this
+            System.out.println("Setters missing: " + e.getMessage());
+        }
+
+        // Delete the inorder successor node
+        node.setRight(delete(node.getRight(), minNode.getId()));
+    }
+
+    // Update height
+    node.setHeight(1 + Math.max(height(node.getLeft()), height(node.getRight())));
+
+    // Rebalance
+    int balance = getBalance(node);
+
+    // Left Left
+    if (balance > 1 && getBalance(node.getLeft()) >= 0)
+        return rightRotate(node);
+
+    // Left Right
+    if (balance > 1 && getBalance(node.getLeft()) < 0) {
+        node.setLeft(leftRotate(node.getLeft()));
+        return rightRotate(node);
+    }
+
+    // Right Right
+    if (balance < -1 && getBalance(node.getRight()) <= 0)
+        return leftRotate(node);
+
+    // Right Left
+    if (balance < -1 && getBalance(node.getRight()) > 0) {
+        node.setRight(rightRotate(node.getRight()));
+        return leftRotate(node);
+    }
+
+    return node;
+}
+
+private T getMinValueNode(T node) {
+    T current = node;
+    while (current.getLeft() != null) {
+        current = current.getLeft();
+    }
+    return current;
+}
+
     public void inorderDisplay() {
         inorder(root);
     }//End of inorderDisplay method
