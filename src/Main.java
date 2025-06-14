@@ -263,8 +263,17 @@ public class Main {
                                         accountNode.addTransaction("deposit", amount); 
                                         }//End of else    
                                     }//End of switch
+                                    break;
                                 case 4:
-                                    // Implement staff functionality
+                                    System.out.print("Enter the id you want the logs for:");
+                                    id = scanner.nextInt();
+                                    scanner.nextLine(); // Consume newline
+                                    accountNode = accountRoot.search(id);
+                                    if(accountNode == null) {
+                                        System.out.println("Account with ID " + id + " not found.");
+                                    } else {
+                                        accountNode.displayTransactions();
+                                    }//End of else
                                     break;
                                 case 0:
                                     System.out.println("Logging out...");
