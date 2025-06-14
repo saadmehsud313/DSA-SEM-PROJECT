@@ -242,7 +242,6 @@ public class Main {
                                     }//End of switch
                                     break;
                                 case 3:
-                                    
                                     System.out.print("Enter account ID for transaction: ");
                                     id = scanner.nextInt();
                                     scanner.nextLine(); 
