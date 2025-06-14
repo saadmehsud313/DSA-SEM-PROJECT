@@ -5,8 +5,19 @@ public class Main {
     static int attemptLimit = 3;
     private static int currentID = 1000; // Starting ID
 
-    public static int generateID() {
-        return currentID++;
+    public static int generateID(AVLTree<AccountNode> accountRoot) {
+        AccountNode temp = accountRoot.getRoot().getRight();
+
+        if(temp == null) {
+            System.out.println("ID can not be generated, no accounts exist.");
+            return 0;
+        }
+        while(temp.getRight() != null)
+        {
+            temp = temp.getRight();
+            System.out.println("Current ID: " + temp.getId());
+        } 
+        return temp.getId() + 1; // Increment the last ID found
     }
 
 
@@ -19,10 +30,13 @@ public class Main {
         String username, password, accountType = "";
 
         // Load data (you need to implement file reading in your AVLTree class)
-        adminRoot = DataLoader.loadUserData("admin.txt");
-        staffRoot = DataLoader.loadUserData("staff.txt");
         accountRoot = DataLoader.loadAccountData("accounts.txt");
-
+        adminRoot.inorderDisplay();
+        adminRoot = DataLoader.loadUserData("admin.txt");
+        System.out.println("Admin Data:");
+        staffRoot = DataLoader.loadUserData("staff.txt");
+        System.out.println("Account Data:");
+        accountRoot.inorderDisplay();
         System.out.println("**********************************WELCOME TO BANK MANAGEMENT SYSTEM*********************************");
 
         while (choice != 0) {
@@ -55,7 +69,7 @@ public class Main {
                                 case 1:
                                     System.out.println("Enter the name (CNIC Name): ");
                                     username = scanner.nextLine();
-                                    int newID = generateID();
+                                    int newID = generateID(accountRoot);
                                     System.out.println("Generated ID: " + newID);
 
                                     System.out.print("Enter password: ");
@@ -81,13 +95,81 @@ public class Main {
                                     // Implement deletion
                                     break;
                                 case 3:
-                                    // Implement search
+                                    System.out.print("Enter account ID to search: ");
+                                    id = scanner.nextInt();
+                                    scanner.nextLine(); // Consume newline
+                                    AccountNode account = accountRoot.search(id);
+                                    if(account == null)
+                                    {
+                                        System.out.println("Account with ID " + id + " not found.");
+
+                                    }//end of if 
+                                    else
+                                    {
+                                        System.out.println("Account found: ID: " + account.getId() + ", Username: " + account.getUsername() +
+                                                ", Type: " + account.getType() + ", Balance: " + account.getBalance() + ", Status: " + account.getStatus());
+                                    }//End of else
                                     break;
                                 case 4:
-                                    accountRoot.displayInOrder(); // Assuming this method exists
+                                    accountRoot.inorderDisplay();
                                     break;
                                 case 5:
-                                    // Implement update
+                                    System.out.print("Enter account ID to update: ");
+                                    id = scanner.nextInt();
+                                    scanner.nextLine(); // Consume newline
+                                    account = accountRoot.search(id);
+                                    if (account == null) {
+                                        System.out.println("Account with ID " + id + " not found.");
+                                        break;
+                                    }
+                                    System.out.print("Select the attribute you want to change:");
+                                    System.out.println("1. Username");
+                                    System.out.println("2. Password");
+                                    System.out.println("3. PIN");
+                                    System.out.println("4. Account Type");
+                                    System.out.println("5.Status");
+                                    System.out.print("Enter your choice: ");
+                                    int updateChoice = scanner.nextInt();
+                                    scanner.nextLine(); // Consume newline
+                                    switch (updateChoice) {
+                                        case 1:
+                                            System.out.println("Enter new username: ");
+                                            username = scanner.nextLine();
+                                            break;
+                                            case 2:
+                                            System.out.println("Enter new password: ");
+                                            password = scanner.nextLine();
+                                            break;
+                                        case 3:
+                                            System.out.println("Enter new PIN: ");
+                                            pin = scanner.nextInt();
+                                            scanner.nextLine(); // Consume newline
+                                            break;
+                                        case 4:
+                                            System.out.println("Select new account type:\n1. Savings\n2. Current\n3. Default");
+                                            int newTypeChoice = scanner.nextInt();
+                                            scanner.nextLine(); // Consume newline
+                                            switch (newTypeChoice) {
+                                                case 1 -> accountType = "Savings";
+                                                case 2 -> accountType = "Current";
+                                                default -> accountType = "Default";
+                                            }
+                                            break;
+                                        case 5:
+                                            System.out.println("Enter new status : ");
+                                            System.out.println("1. Active");
+                                            System.out.println("2. Inactive");
+                                            System.out.println("3.Blocked");
+                                            int statusChoice = scanner.nextInt();
+                                            scanner.nextLine(); // Consume newline
+                                            switch (statusChoice) {
+                                                case 1 ->account.setStatus("active"); 
+                                                case 2 -> account.setStatus("inactive");
+                                                case 3 -> account.setStatus("blocked");
+                                                default->System.out.println("Invalid status choice."); 
+                                            }
+                                            System.out.println("Account status updated to: " + account.getStatus());
+                                    }
                                     break;
                                 case 6:
                                     // Implement logs

@@ -1,0 +1,1 @@
+accountRoot = DataLoader.loadAccountData("accounts.txt");

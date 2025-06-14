@@ -1,6 +1,4 @@
 import java.io.*;
-import java.nio.BufferUnderflowException;
-import java.util.*;
 
 public class DataLoader {
     public static AVLTree<UserNode> loadUserData(String filename) {
@@ -35,6 +33,7 @@ public class DataLoader {
 
     public static AVLTree<AccountNode> loadAccountData(String filename) {
         AVLTree<AccountNode> tree = new AVLTree<>();
+        AccountNode temp= new AccountNode();
         filename="D:\\JAVA Programs\\IntelliJ\\DSA SEM PROJECT\\src\\"+filename;
         System.out.println("File Name"+filename);
         File file = new File(filename);
@@ -43,15 +42,17 @@ public class DataLoader {
             while ((line = br.readLine()) != null) {
                 try {
                     String[] parts = line.split(",");
-                    int id = Integer.parseInt(parts[0].trim());
-                    int pin = Integer.parseInt(parts[1].trim());
-                    String username = parts[2].trim();
-                    String password = parts[3].trim();
-                    String type = parts[4].trim();
-                    float balance = Float.parseFloat(parts[5].trim());
-                    String status = parts[6].trim();
+                    int id = Integer.valueOf(parts[0]);
+                    int pin = Integer.valueOf(parts[1]);
+                    String username = parts[2];
+                    String password = parts[3];
+                    String type = parts[4];
+                    float balance = Float.valueOf(parts[5]);
+                    String status = parts[6];
+
                     tree.insertNode(new AccountNode(id, username, password, status, type, balance, pin));
-                } catch (Exception e) {
+                    
+                    } catch (Exception e) {
                     System.out.println("Skipping invalid line: " + line);
                 }
             }
@@ -60,4 +61,12 @@ public class DataLoader {
         }
         return tree;
     }
-}
+    public static  void displayInOrder(AccountNode node) {
+        if (node != null) {
+            displayInOrder((AccountNode) node.getLeft());
+            System.out.println("ID: " + node.getId() + ", Username: " + node.getUsername() + ", Password: " + node.getPassword() +
+                    ", Type: " + node.getType() + ", Balance: " + node.getBalance() + ", Status: " + node.getStatus());
+            displayInOrder((AccountNode) node.getRight());
+        }
+    }//End of displayInOrder method
+}//End of dataloader.java
