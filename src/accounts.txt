@@ -1,0 +1,10 @@
+1001,1234,Ali Khan,pass123,Savings,50000.0,Active
+1002,5678,Ayesha Noor,ayesha321,Current,12000.0,Active
+1003,9876,Omar Farooq,omar@456,Savings,75000.0,Inactive
+1004,4321,Maria Saeed,m@ria789,Current,23000.0,Active
+1005,2468,Hassan Raza,hasan000,Savings,10000.0,Blocked
+1006,1357,Zainab Abbas,zainab999,Current,4000.0,Active
+1007,8642,Bilal Ahmed,bilal321,Savings,95000.0,Inactive
+1008,3141,Fatima Tariq,fatima#1,Savings,6700.0,Active
+1009,7865,Usman Javed,usman007,Current,2100.0,Blocked
+1010,1212,Noor Ul Ain,noor1234,Savings,8800.0,Active
